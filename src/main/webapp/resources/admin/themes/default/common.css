@@ -1,0 +1,59 @@
+
+.ZebraDialogOverlay {
+    background: #fafafa;
+}
+.ZebraDialog *{
+    font-family: "微软雅黑", "Microsoft Yahei", Helmet, Freesans, sans-serif !important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+}
+.ZebraDialog .ZebraDialog_Title,
+.ZebraDialog .ZebraDialog_BodyOuter,
+.ZebraDialog .ZebraDialog_ButtonsOuter {
+    border-color: #c0c0c0;
+    border-width: 1px;
+}
+.ZebraDialog .ZebraDialog_Title {
+    background: #df0001;
+    color:#fff;
+    padding: 12px 10px;
+}
+.ZebraDialog .ZebraDialog_Body {
+    background: #fff;
+    border-top-color: #fff;
+    border-bottom:1px solid #c0c0c0;
+    font-size: 12px;
+}
+.ZebraDialog .ZebraDialog_Body th{
+    text-align: center;
+    font-weight: bold;
+    background: #fafafa;
+}
+.ZebraDialog .ZebraDialog_Title a.ZebraDialog_Close {
+    color: #fff;
+}
+.ZebraDialog .ZebraDialog_ButtonsOuter{
+    background: #f0f0f0;
+    padding: 10px 15px 10px 10px;
+    text-align: right;
+}
+.ZebraDialog a.ZebraDialog_Close {
+    right: 10px;
+    top: 7px;
+}
+.ZebraDialog .ZebraDialog_Buttons .btn {
+    margin:0 4px;
+}
+.ZebraDialog .ZebraDialog_Buttons .btn-primary {
+    background:#ff5f5f;
+    border-color: #ff5f5f;
+}
+.ZebraDialog .ZebraDialog_Buttons .btn-primary:hover {
+    background:#d75050;
+    border-color: #d75050;
+}
+.ZebraDialog .ZebraDialog_Icon{padding-left: 20px;}
+.ZebraDialog *, .ZebraDialog *:after, .ZebraDialog *:before{box-sizing:border-box !important;}
+
+.hong1{ color:#F00;}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
+<urlrewrite>
+
+    <!-- 虚拟文件路径解析器 -->
+    <rule>
+        <from>^/file/(.*)$</from>
+        <to>/analysis/file.action?fileUrl=$1</to>
+    </rule>
+
+</urlrewrite>

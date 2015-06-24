@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+    <mime-type>text/html</mime-type>
+    <mime-type>application/vnd.wap.xhtml+xml</mime-type>
+    <mime-type>application/xhtml+xml</mime-type>
+
+    <!-- Exclude path from decoration. -->
+    <mapping path="/signin.vhtml*" exclue="true"/>
+    <mapping path="/logout.vhtml*" exclue="true"/>
+    <mapping path="/invalidSession.vhtml*" exclue="true"/>
+    <mapping path="/accessdenied.vhtml*" exclue="true"/>
+
+
+    <mapping path="/portal/*" decorator="/decorators/portal.jsp"/>
+
+    <!-- 系统管理装饰器 -->
+    <mapping>
+        <path>/system/*</path>
+        <decorator>/pages/system/menu.jsp</decorator>
+        <decorator>/decorators/default.jsp</decorator>
+    </mapping>
+    <!-- 预约预订 -->
+    <mapping>
+        <path>/order/*</path>
+        <decorator>/pages/order/menu.jsp</decorator>
+        <decorator>/decorators/default.jsp</decorator>
+    </mapping>
+    <!-- 位置管理 -->
+    <mapping>
+        <path>/position/*</path>
+        <decorator>/pages/position/menu.jsp</decorator>
+        <decorator>/decorators/default.jsp</decorator>
+    </mapping>
+    <!-- 信息管理 -->
+    <mapping>
+        <path>/library/*</path>
+        <decorator>/pages/library/menu.jsp</decorator>
+        <decorator>/decorators/default.jsp</decorator>
+    </mapping>
+    <!-- 活动管理 -->
+    <mapping>
+        <path>/activity/*</path>
+        <decorator>/pages/activity/menu.jsp</decorator>
+        <decorator>/decorators/default.jsp</decorator>
+    </mapping>
+    <!-- 活动管理 -->
+    <mapping>
+        <path>/dictionary/*</path>
+        <decorator>/pages/dictionary/menu.jsp</decorator>
+        <decorator>/decorators/default.jsp</decorator>
+    </mapping>
+    
+
+    <!-- 默认装饰器 -->
+    <mapping path="/*" decorator="/decorators/default.jsp"/>
+
+</sitemesh>

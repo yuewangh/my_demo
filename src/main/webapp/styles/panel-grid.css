@@ -1,0 +1,15 @@
+.panel-grid .nav-tabs {
+    padding: 5px 15px 0px 15px !important;
+}
+
+.panel-grid .nav-tabs li a:link{
+    color: #fff;
+}
+
+.panel-grid .nav-tabs li a:hover{
+    color: #000;
+}
+
+.panel-grid .nav-tabs .active a:link{
+    color: #000;
+}

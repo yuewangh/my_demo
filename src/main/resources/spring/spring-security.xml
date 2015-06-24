@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+                         http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+                         http://www.springframework.org/schema/security
+                         http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+    <beans:bean name="userDetailsService"
+                class="com.isoftstone.demo.userManager.service.impl.UserDetailsServiceImpl"/>
+
+    <!-- 静态文件 -->
+    <http pattern="/ui/**" request-matcher="ant" security="none"/>
+    <http pattern="/styles/**" request-matcher="ant" security="none"/>
+    <http pattern="/scripts/**" request-matcher="ant" security="none"/>
+    <http pattern="/images/**" request-matcher="ant" security="none"/>
+    <http pattern="/themes/**" request-matcher="ant" security="none"/>
+    <http pattern="/resources/**" request-matcher="ant" security="none"/>
+    <http pattern="*.ico" request-matcher="ant" security="none"/>
+
+    <!-- 模板解析 -->
+    <http pattern="/file/**" request-matcher="ant" security="none"/>
+
+    <!-- 错误页面 -->
+    <http pattern="/403.vhtml*" request-matcher="ant" security="none"/>
+    <http pattern="/404.vhtml*" request-matcher="ant" security="none"/>
+    <http pattern="/500.vhtml*" request-matcher="ant" security="none"/>
+
+    <!-- 后台登陆页 -->
+    <http pattern="/signin.vhtml*" request-matcher="ant" security="none"/>
+    <!-- 前台登陆页 -->
+    <http pattern="/portal/login.vhtml*" request-matcher="ant" security="none"/>
+    <!-- 前台注册页面 -->
+    <http pattern="/portal/user/register.vhtml*" request-matcher="ant" security="none"/>
+    <!-- 验证用户名是否被占用 -->
+    <http pattern="/system/account/validateLoginName.json*" request-matcher="ant" security="none"/>
+    <!-- 验证用户名是否被占用 -->
+    <http pattern="/system/account/validateMail.json*" request-matcher="ant" security="none"/>
+    <!-- 验证验证码是否正确 -->
+    <http pattern="/system/account/validateCaptcha.json*" request-matcher="ant" security="none"/>
+    <!-- app接口 -->
+    <http pattern="/app/**" request-matcher="ant" security="none"/>
+    <http pattern="/portal/registerView.vhtml*" request-matcher="ant" security="none"/>
+    <!-- 默认页 -->
+    <http pattern="/index.html" request-matcher="ant" security="none"/>
+    <!-- 验证图片 -->
+    <http pattern="/captcha.jpg" request-matcher="ant" security="none"/>
+    
+    <http pattern="/portal/user/activationMail.vhtml*" path-type="ant" security="none"/>
+    <http pattern="/portal/user/verifyMail.vhtml*" path-type="ant" security="none"/>
+    <http pattern="/portal/user/forgetPassword.vhtml*" path-type="ant" security="none"/>
+    <http pattern="/system/account/forgetPasswordView.action*" path-type="ant" security="none"/>
+    <http pattern="/portal/user/waitVerifyMail.vhtml*" path-type="ant" security="none"/>
+    <http pattern="/portal/user/changePassword.vhtml*" path-type="ant" security="none"/>
+    <http pattern="/portal/user/savePassword.vhtml*" path-type="ant" security="none"/>
+    <http pattern="/common/**" path-type="ant" security="none"/>
+
+    <http auto-config="false" use-expressions="true" servlet-api-provision="true" entry-point-ref="loginEntryPoint">
+
+        <headers>
+            <cache-control/>
+        </headers>
+
+        <intercept-url pattern="/portal/index.vhtml*" access="permitAll"/>
+        <intercept-url pattern="/portal/getBuildinglist.json*" access="permitAll"/>
+        <intercept-url pattern="/portal/community/**" access="permitAll"/>
+        <intercept-url pattern="/portal/platform/**" access="permitAll"/>
+        <intercept-url pattern="/portal/pfService/**" access="permitAll"/>
+        <intercept-url pattern="/portal/position/**" access="permitAll"/>
+        <intercept-url pattern="/portal/link/**" access="permitAll"/>
+        <intercept-url pattern="/order/appointment/save.json*" access="permitAll"/>
+        <intercept-url pattern="/order/appointment/delete.json*" access="permitAll"/>
+        <intercept-url pattern="/order/reservation/delete.json*" access="permitAll"/>
+        <intercept-url pattern="/portal/reserve.vhtml*" access="permitAll"/>
+        <intercept-url pattern="/portal/**" access="hasRole('SYSTEM_PERSONA')"/>
+        <intercept-url pattern="/login.vhtml*" access="hasRole('SYSTEM_USER')"/>
+        <intercept-url pattern="/**" access="hasRole('SYSTEM_ACCOUNT')"/>
+
+
+        <!-- 替换默认的LoginFilter -->
+        <custom-filter ref="loginAuthenticationFilter" position="FORM_LOGIN_FILTER"/>
+
+        <custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter"/>
+
+        <logout invalidate-session="true" delete-cookies="JSESSIONID"
+                logout-success-url="/portal/index.vhtml" logout-url="/j_spring_security_logout"/>
+
+        <remember-me key="beehivePetStore" user-service-ref="userDetailsService"/>
+
+        <port-mappings>
+            <port-mapping http="8071" https="8471"/>
+        </port-mappings>
+
+         <session-management session-authentication-strategy-ref="sessionAuthenticationStrategy"/>
+
+        <access-denied-handler error-page="/accessdenied.htm"/>
+
+    </http>
+
+    <global-method-security secured-annotations="enabled"/>
+
+    <beans:bean id="loginEntryPoint"
+                class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <!-- 默认登录页的url -->
+        <beans:constructor-arg value="/portal/login.vhtml"/>
+        <!-- <beans:constructor-arg value="/signin.vhtml"/> -->
+    </beans:bean>
+
+    <!-- session管理 -->
+    <beans:bean id="sessionAuthenticationStrategy"
+                class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+        <beans:constructor-arg>
+            <beans:list>
+                <beans:bean
+                        class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
+                    <beans:constructor-arg ref="sessionRegistry"/>
+                    <beans:property name="maximumSessions" value="1"/>
+                    <beans:property name="exceptionIfMaximumExceeded" value="true"/>
+                </beans:bean>
+                <beans:bean
+                        class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy">
+                </beans:bean>
+                <beans:bean
+                        class="org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy">
+                    <beans:constructor-arg ref="sessionRegistry"/>
+                </beans:bean>
+            </beans:list>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <!-- session管理注册机 -->
+    <beans:bean id="sessionRegistry"
+                class="org.springframework.security.core.session.SessionRegistryImpl"/>
+
+    <!-- session管理过滤器 -->
+    <beans:bean id="concurrencyFilter"
+                class="org.springframework.security.web.session.ConcurrentSessionFilter">
+        <beans:property name="sessionRegistry" ref="sessionRegistry"/>
+        <beans:property name="expiredUrl" value="/portal/login.vhtml"/>
+    </beans:bean>
+
+    <!-- 自定义验证过滤器 -->
+    <beans:bean class="com.isoftstone.demo.security.web.filter.CustomLoginFilter"
+                id="loginAuthenticationFilter">
+
+        <beans:property name="sessionAuthenticationStrategy" ref="sessionAuthenticationStrategy"/>
+
+        <!-- 校验登录是否有效的虚拟url -->
+        <beans:property name="filterProcessesUrl" value="/j_spring_security_check"/>
+        <beans:property name="usernameParameter" value="j_username"/>
+        <beans:property name="passwordParameter" value="j_password"/>
+        <beans:property name="allowEmptyValidateCode" value="${security.use.ValidateCode}"/>
+
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="authenticationSuccessHandler">
+            <!-- 登录成功后的处理handler -->
+            <beans:bean
+                    class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+                <!-- 登录成功后的默认url -->
+                 <beans:property name="defaultTargetUrl" value="/login.vhtml"/>
+                 <!-- 登陆成功后默认跳转回原来url--> 
+               <beans:property name="alwaysUseDefaultTargetUrl" value="false"/>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="authenticationFailureHandler">
+            <beans:bean
+                    class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+                <!-- 登录失败后的默认Url -->
+                <beans:property name="defaultFailureUrl" value="/portal/login.vhtml"/>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+
+    <!-- 投票权 -->
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="customAuthenticationProvider"/>
+        <authentication-provider ref="authenticationProvider"/>
+    </authentication-manager>
+
+    <!-- 自定义投票器 -->
+    <beans:bean id="customAuthenticationProvider"
+                class="com.isoftstone.demo.security.service.CustomAuthenticationProvider">
+        <beans:property name="userDetailsService" ref="userDetailsService"/>
+    </beans:bean>
+
+    <!-- 默认投票器 -->
+    <beans:bean id="authenticationProvider"
+                class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="hideUserNotFoundExceptions" value="false"/>
+        <beans:property name="userDetailsService" ref="userDetailsService"/>
+        <beans:property name="messageSource" ref="messageSource"/>
+        <beans:property name="passwordEncoder" ref="md5PasswordEncoder"/>
+        <beans:property name="saltSource" ref="saltSource"/>
+    </beans:bean>
+
+    <!-- <beans:bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
+        <beans:property name="encodeHashAsBase64" value="false"/>
+    </beans:bean> -->
+    <beans:bean id="md5PasswordEncoder" class="com.isoftstone.demo.security.util.CustomPasswordEncoder">
+    	<beans:property name="encodeHashAsBase64" value="false"/>
+    </beans:bean>
+
+    <beans:bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+        <beans:property name="userPropertyToUse" value="username"/>
+    </beans:bean>
+
+</beans:beans>
